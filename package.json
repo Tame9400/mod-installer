@@ -39,7 +39,7 @@
     },
     "publish": {
       "provider": "github",
-      "owner": "mod-installer",
+      "owner": "tame9400",
       "repo": "mod-installer"
     }
   },
