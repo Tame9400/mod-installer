@@ -28,11 +28,23 @@ jobs:
         with:
           node-version: 20
 
+      - name: Install Linux system dependencies
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libgtk-3-0 libnotify4 libnss3 libxss1 libxtst6 libatspi2.0-0 libdrm2 libgbm1 libfuse2
+
       - name: Install dependencies
         run: npm ci
 
-      - name: Build
-        run: npm run build:${{ matrix.os == 'windows-latest' && 'win' || matrix.os == 'macos-latest' && 'mac' || 'linux' }}
+      - name: TypeScript compile
+        run: npx tsc
+
+      - name: Vite build
+        run: npx vite build --config vite.config.js
+
+      - name: Package
+        run: npx electron-builder ${{ matrix.build-args }}
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4

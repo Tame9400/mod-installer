@@ -28,7 +28,8 @@
     },
     "mac": {
       "target": "dmg",
-      "category": "public.app-category.games"
+      "category": "public.app-category.games",
+      "identity": null
     },
     "linux": {
       "target": "AppImage",
