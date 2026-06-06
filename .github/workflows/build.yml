@@ -8,6 +8,7 @@ on:
 jobs:
   build:
     strategy:
+      fail-fast: false
       matrix:
         include:
           - os: windows-latest
@@ -15,7 +16,7 @@ jobs:
             ext: .exe
           - os: macos-latest
             build-args: --mac
-            ext: .dmg
+            ext: .zip
           - os: ubuntu-latest
             build-args: --linux
             ext: .AppImage

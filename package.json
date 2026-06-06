@@ -27,7 +27,7 @@
       "target": "nsis"
     },
     "mac": {
-      "target": "dmg",
+      "target": "zip",
       "category": "public.app-category.games",
       "identity": null
     },
