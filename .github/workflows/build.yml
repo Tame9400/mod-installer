@@ -4,14 +4,21 @@ on:
   push:
     branches: [main]
     tags: ['v*']
-  pull_request:
-    branches: [main]
 
 jobs:
   build:
     strategy:
       matrix:
-        os: [windows-latest, macos-latest, ubuntu-latest]
+        include:
+          - os: windows-latest
+            build-args: --win
+            ext: .exe
+          - os: macos-latest
+            build-args: --mac
+            ext: .dmg
+          - os: ubuntu-latest
+            build-args: --linux
+            ext: .AppImage
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -25,28 +32,13 @@ jobs:
         run: npm ci
 
       - name: Build
-        run: npm run build
+        run: npm run build:${{ matrix.os == 'windows-latest' && 'win' || matrix.os == 'macos-latest' && 'mac' || 'linux' }}
 
-      - name: Upload Windows artifact
-        if: matrix.os == 'windows-latest'
+      - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Mod-Installer-Windows
-          path: dist-pkg/*.exe
-
-      - name: Upload macOS artifact
-        if: matrix.os == 'macos-latest'
-        uses: actions/upload-artifact@v4
-        with:
-          name: Mod-Installer-macOS
-          path: dist-pkg/*.dmg
-
-      - name: Upload Linux artifact
-        if: matrix.os == 'ubuntu-latest'
-        uses: actions/upload-artifact@v4
-        with:
-          name: Mod-Installer-Linux
-          path: dist-pkg/*.AppImage
+          name: Mod-Installer-${{ matrix.os }}
+          path: dist-pkg/*${{ matrix.ext }}
 
   release:
     if: startsWith(github.ref, 'refs/tags/v')
@@ -62,8 +54,5 @@ jobs:
 
       - uses: softprops/action-gh-release@v2
         with:
-          files: |
-            Mod-Installer-Windows-*.exe
-            Mod-Installer-macOS-*.dmg
-            Mod-Installer-Linux-*.AppImage
+          files: dist-pkg/*
           generate_release_notes: true
