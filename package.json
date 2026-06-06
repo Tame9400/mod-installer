@@ -1,0 +1,63 @@
+{
+  "name": "mod-installer",
+  "version": "1.0.0",
+  "author": "Mod Installer",
+  "description": "Universal mod installer with support for Cyberpunk 2077, Red Dead Redemption 2, and GTA V (Legacy + Enhanced Editions)",
+  "main": "dist/main/index.js",
+  "scripts": {
+    "start": "tsc && electron .",
+    "dev": "tsc -w & vite --config vite.config.js",
+    "build:renderer": "vite build --config vite.config.js",
+    "build": "tsc && vite build --config vite.config.js && electron-builder",
+    "build:win": "tsc && vite build --config vite.config.js && electron-builder --win",
+    "build:mac": "tsc && vite build --config vite.config.js && electron-builder --mac",
+    "build:linux": "tsc && vite build --config vite.config.js && electron-builder --linux"
+  },
+  "build": {
+    "appId": "com.modinstaller.desktop",
+    "productName": "Mod Installer",
+    "directories": {
+      "output": "dist-pkg"
+    },
+    "files": [
+      "dist/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": "nsis",
+      "sign": false,
+      "certificateSubjectName": null,
+      "certificateFile": null
+    },
+    "mac": {
+      "target": "dmg",
+      "category": "public.app-category.games"
+    },
+    "linux": {
+      "target": "AppImage",
+      "category": "Game"
+    },
+    "publish": {
+      "provider": "github",
+      "owner": "mod-installer",
+      "repo": "mod-installer"
+    }
+  },
+  "dependencies": {
+    "adm-zip": "^0.5.12",
+    "electron-updater": "^6.1.8",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@types/adm-zip": "^0.5.8",
+    "@types/node": "^20.10.6",
+    "@types/react": "^18.2.45",
+    "@types/react-dom": "^18.2.18",
+    "@vitejs/plugin-react": "^4.2.1",
+    "electron": "^28.1.0",
+    "electron-builder": "^24.9.1",
+    "typescript": "^5.3.3",
+    "vite": "^5.0.11"
+  }
+}

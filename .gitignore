@@ -1,0 +1,12 @@
+node_modules/
+dist/
+dist-pkg/
+*.exe
+*.blockmap
+*.exe.blockmap
+*.dmg
+*.AppImage
+.DS_Store
+Thumbs.db
+*.log
+checkpoint.ts
