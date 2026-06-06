@@ -24,10 +24,7 @@
       "package.json"
     ],
     "win": {
-      "target": "nsis",
-      "sign": false,
-      "certificateSubjectName": null,
-      "certificateFile": null
+      "target": "nsis"
     },
     "mac": {
       "target": "dmg",
