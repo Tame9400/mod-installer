@@ -12,15 +12,16 @@ jobs:
       matrix:
         include:
           - os: windows-latest
-            build-script: build:win
-            ext: .exe
+            build-args: --win
           - os: macos-latest
-            build-script: build:mac
-            ext: .zip
+            build-args: --mac
           - os: ubuntu-latest
-            build-script: build:linux
-            ext: .AppImage
+            build-args: --linux
     runs-on: ${{ matrix.os }}
+
+    defaults:
+      run:
+        shell: bash
 
     steps:
       - uses: actions/checkout@v4
@@ -38,32 +39,29 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build
-        run: npm run ${{ matrix.build-script }}
+      - name: TypeScript compile
+        run: npx --no-install tsc 2>&1
 
-      - name: List output files
-        shell: bash
-        run: ls -laR dist-pkg/ 2>/dev/null || echo "dist-pkg does not exist"
+      - name: Vite build
+        run: npx --no-install vite build --config vite.config.js 2>&1
+
+      - name: Package
+        run: npx --no-install electron-builder ${{ matrix.build-args }} 2>&1
+
+      - name: Find artifacts
+        run: |
+          echo "=== Current directory ==="
+          pwd
+          echo "=== dist-pkg ==="
+          ls -la dist-pkg/ 2>/dev/null || echo "(no dist-pkg dir)"
+          echo "=== recursive find ==="
+          find . -name "*.exe" -o -name "*.zip" -o -name "*.AppImage" -o -name "*.dmg" 2>/dev/null || echo "find not available"
+          echo "=== dist dir ==="
+          ls -la dist/ 2>/dev/null || echo "(no dist dir)"
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: Mod-Installer-${{ matrix.os }}
-          path: dist-pkg/
-
-  release:
-    if: startsWith(github.ref, 'refs/tags/v')
-    needs: build
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    steps:
-      - uses: actions/download-artifact@v4
-        with:
-          pattern: Mod-Installer-*
-          merge-multiple: true
-
-      - uses: softprops/action-gh-release@v2
-        with:
-          files: dist-pkg/*
-          generate_release_notes: true
+          path: |
+            dist-pkg/
