@@ -115,7 +115,7 @@ export function App() {
   return (
     <div style={s.app} ref={dropRef}
       onDragOver={e => { e.preventDefault(); setDragOver(true); }}
-      onDragLeave={() => setDragOver(false)}
+      onDragEnter={e => { e.preventDefault(); setDragOver(true); }}
       onDrop={handleDrop}>
       <header style={s.header}>
         <h1>Universal Mod Installer</h1>
@@ -137,7 +137,10 @@ export function App() {
       </header>
 
       {dragOver && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(33,150,243,0.15)', border: '3px dashed #2196f3', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 24, color: '#2196f3' }}>
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(33,150,243,0.15)', border: '3px dashed #2196f3', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 24, color: '#2196f3' }}
+          onDragOver={e => { e.preventDefault(); e.stopPropagation(); }}
+          onDragLeave={() => setDragOver(false)}
+          onDrop={handleDrop}>
           Drop mod files here
         </div>
       )}
